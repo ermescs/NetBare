@@ -208,7 +208,7 @@ import javax.net.ssl.SSLHandshakeException;
             NetBareLog.e(e.getMessage());
             if (ip != null) {
                 NetBareLog.i("add %s to whitelist", ip);
-                SSLWhiteList.add(ip);
+                //SSLWhiteList.add(ip);
             }
         } else if (e instanceof ConnectionShutdownException) {
             // Connection exception, do not mind this.
@@ -223,7 +223,7 @@ import javax.net.ssl.SSLHandshakeException;
             NetBareLog.wtf(e);
             if (ip != null) {
                 NetBareLog.i("add %s to whitelist", ip);
-                SSLWhiteList.add(ip);
+                //SSLWhiteList.add(ip);
             }
         }
     }
