@@ -41,13 +41,18 @@ subprojects {
     if (project.ext.artifactId == null) return
 
     apply plugin: 'maven-publish'
+    project.afterEvaluate {
+        publishing {
+            publications {
+                library(MavenPublication) {
+                    groupId = project.group
+                    artifactId = project.ext.artifactId
+                    version = project.version
 
-    publishing {
-        publications {
-            library(MavenPublication) {
-                groupId = project.group
-                artifactId = project.ext.artifactId
-                version = project.version
+                    project.afterEvaluate {
+                        artifact bundleReleaseAar
+                    }
+                }
             }
         }
     }
