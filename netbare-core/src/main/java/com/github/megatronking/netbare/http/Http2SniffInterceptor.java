@@ -42,8 +42,8 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull HttpRequestChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
-        if (index == 0) {
+                             int packetIndex) throws IOException {
+        if (packetIndex == 0) {
             HttpRequest request = chain.request();
             if (mLog == null) {
                 mLog = new NetBareXLog(request.protocol(), request.ip(), request.port());
@@ -76,8 +76,8 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull HttpResponseChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
-        if (index == 0) {
+                             int packetIndex) throws IOException {
+        if (packetIndex == 0) {
             HttpResponse response = chain.response();
             if (mLog == null) {
                 mLog = new NetBareXLog(response.protocol(), response.ip(), response.port());

@@ -74,7 +74,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
 
     @Override
     protected void intercept(@NonNull final HttpRequestChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
+                             int packetIndex) throws IOException {
         if (chain.request().httpProtocol() == HttpProtocol.HTTP_2) {
             if (!buffer.hasRemaining()) {
                 return;
@@ -143,7 +143,7 @@ public final class Http2DecodeInterceptor extends HttpPendingIndexedInterceptor 
 
     @Override
     protected void intercept(@NonNull final HttpResponseChain chain, @NonNull ByteBuffer buffer,
-                             int index)
+                             int packetIndex)
             throws IOException {
         if (chain.response().httpProtocol() == HttpProtocol.HTTP_2) {
             if (!buffer.hasRemaining()) {

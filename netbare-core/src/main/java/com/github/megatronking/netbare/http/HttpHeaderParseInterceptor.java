@@ -39,8 +39,8 @@ import java.util.List;
 
     @Override
     protected void intercept(@NonNull HttpRequestChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
-        if (index > 0) {
+                             int packetIndex) throws IOException {
+        if (packetIndex > 0) {
             chain.process(buffer);
             return;
         }
@@ -53,8 +53,8 @@ import java.util.List;
 
     @Override
     protected void intercept(@NonNull HttpResponseChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
-        if (index > 0) {
+                             int packetIndex) throws IOException {
+        if (packetIndex > 0) {
             chain.process(buffer);
             return;
         }

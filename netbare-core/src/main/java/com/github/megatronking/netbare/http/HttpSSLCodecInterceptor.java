@@ -61,7 +61,7 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull final HttpRequestChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
+                             int packetIndex) throws IOException {
         if (!chain.request().isHttps()) {
             chain.process(buffer);
         } else if (mEngineFactory == null) {
@@ -127,7 +127,7 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull final HttpResponseChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
+                             int packetIndex) throws IOException {
         if (!chain.response().isHttps()) {
             chain.process(buffer);
         } else if (mEngineFactory == null) {
