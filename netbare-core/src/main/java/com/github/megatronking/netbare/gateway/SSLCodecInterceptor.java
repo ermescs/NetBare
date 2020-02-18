@@ -76,7 +76,7 @@ public abstract class SSLCodecInterceptor<Req extends Request, ReqChain extends 
     }
 
     @Override
-    protected void intercept(@NonNull ReqChain chain, @NonNull ByteBuffer buffer, int index)
+    protected void intercept(@NonNull ReqChain chain, @NonNull ByteBuffer buffer, int packetIndex)
             throws IOException {
         if (mEngineFactory == null) {
             // Skip all interceptors
@@ -91,7 +91,7 @@ public abstract class SSLCodecInterceptor<Req extends Request, ReqChain extends 
     }
 
     @Override
-    protected void intercept(@NonNull ResChain chain, @NonNull ByteBuffer buffer, int index)
+    protected void intercept(@NonNull ResChain chain, @NonNull ByteBuffer buffer, int packetIndex)
             throws IOException {
         if (mEngineFactory == null) {
             // Skip all interceptors

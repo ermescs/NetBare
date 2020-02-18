@@ -23,8 +23,8 @@ class HttpUrlPrintInterceptor : HttpIndexedInterceptor() {
         }
     }
 
-    override fun intercept(chain: HttpRequestChain, buffer: ByteBuffer, index: Int) {
-        if (index == 0) {
+    override fun intercept(chain: HttpRequestChain, buffer: ByteBuffer, packetIndex: Int) {
+        if (packetIndex == 0) {
             // 一个请求可能会有多个数据包，故此方法会多次触发，这里只在收到第一个包的时候打印
             Log.i(TAG, "Request: " + chain.request().url())
         }
@@ -32,7 +32,7 @@ class HttpUrlPrintInterceptor : HttpIndexedInterceptor() {
         chain.process(buffer)
     }
 
-    override fun intercept(chain: HttpResponseChain, buffer: ByteBuffer, index: Int) {
+    override fun intercept(chain: HttpResponseChain, buffer: ByteBuffer, packetIndex: Int) {
         chain.process(buffer)
     }
 

@@ -43,11 +43,11 @@ public abstract class IndexedInterceptor<Req extends Request, ReqChain extends A
      * @param chain The request chain, call {@linkplain ReqChain#process(ByteBuffer)} to
      *                delivery the packet.
      * @param buffer A nio buffer contains the packet data.
-     * @param index The packet index, started from 0.
+     * @param packetIndex The packet index, started from 0.
      * @throws IOException If an I/O error has occurred.
      */
     protected abstract void intercept(@NonNull ReqChain chain, @NonNull ByteBuffer buffer,
-                                      int index) throws IOException;
+                                      int packetIndex) throws IOException;
 
     /**
      * The same like {@link #intercept(ResChain, ByteBuffer)}.
@@ -55,11 +55,11 @@ public abstract class IndexedInterceptor<Req extends Request, ReqChain extends A
      * @param chain The response chain, call {@linkplain ResChain#process(ByteBuffer)} to
      *                delivery the packet.
      * @param buffer A nio buffer contains the packet data.
-     * @param index The packet index, started from 0.
+     * @param packetIndex The packet index, started from 0.
      * @throws IOException If an I/O error has occurred.
      */
     protected abstract void intercept(@NonNull ResChain chain, @NonNull ByteBuffer buffer,
-                                      int index) throws IOException;
+                                      int packetIndex) throws IOException;
 
     @Override
     public final void intercept(@NonNull ReqChain chain, @NonNull ByteBuffer buffer)

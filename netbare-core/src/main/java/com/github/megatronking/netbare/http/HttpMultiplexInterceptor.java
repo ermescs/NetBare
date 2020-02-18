@@ -50,7 +50,7 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull HttpRequestChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
+                             int packetIndex) throws IOException {
         if (chain.request().httpProtocol() != HttpProtocol.HTTP_1_1) {
             chain.process(buffer);
             return;
@@ -75,7 +75,7 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull HttpResponseChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
+                             int packetIndex) throws IOException {
         mResponseIndex++;
         chain.process(buffer);
     }

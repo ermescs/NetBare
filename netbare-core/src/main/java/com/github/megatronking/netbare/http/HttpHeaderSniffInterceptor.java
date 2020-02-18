@@ -41,7 +41,7 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull HttpRequestChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
+                             int packetIndex) throws IOException {
         if (!buffer.hasRemaining()) {
             return;
         }
@@ -49,7 +49,7 @@ import java.nio.ByteBuffer;
             chain.process(buffer);
             return;
         }
-        if (index == 0) {
+        if (packetIndex == 0) {
             if (requestHeaderFirstByteNotPassed(buffer.get(buffer.position()))) {
                 mCallback.onRequest(chain.request(), buffer);
                 return;
@@ -72,7 +72,7 @@ import java.nio.ByteBuffer;
 
     @Override
     protected void intercept(@NonNull HttpResponseChain chain, @NonNull ByteBuffer buffer,
-                             int index) throws IOException {
+                             int packetIndex) throws IOException {
         if (!buffer.hasRemaining()) {
             return;
         }
@@ -80,7 +80,7 @@ import java.nio.ByteBuffer;
             chain.process(buffer);
             return;
         }
-        if (index == 0) {
+        if (packetIndex == 0) {
             if (responseHeaderFirstByteNotPassed(buffer.get(buffer.position()))) {
                 mCallback.onResponse(chain.response(), buffer);
                 return;
