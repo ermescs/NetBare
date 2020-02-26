@@ -78,6 +78,11 @@ public final class UidDumper {
                 new NetDumper("/proc/net/udp", localIp, IPV4_PATTERN)});
     }
 
+    /**
+     *  Update the given session with the UID. Currently does not work with Android 10
+     *
+     * @param session
+     */
     public void request(final Session session) {
         if (mUidProvider != null) {
             int uid = mUidProvider.uid(session);

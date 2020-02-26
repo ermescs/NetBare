@@ -80,6 +80,11 @@ import javax.net.ssl.SSLEngine;
         mSelectedAlpnResolved = true;
     }
 
+    /**
+     * Prepare and start SSL handshake with the remote server and use the ALPN extension
+     *
+     * @throws IOException If an I/O error has occurred.
+     */
     public void prepareHandshake(HttpProtocol[] protocols, AlpnResolvedCallback callback)
             throws IOException {
         this.mClientAlpns = protocols;

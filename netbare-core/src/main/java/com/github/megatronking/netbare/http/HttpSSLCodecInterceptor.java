@@ -88,9 +88,11 @@ import java.nio.ByteBuffer;
                 HttpProtocol[] protocols = SSLUtils.parseClientHelloAlpn(buffer);
                 mClientAlpnResolved = true;
 
+                // The client does not use the ALPN extension
                 if (protocols == null || protocols.length == 0) {
                     mRequestCodec.setSelectedAlpnResolved();
                     mResponseCodec.setSelectedAlpnResolved();
+                    // Prepare the handshake with the remote server without using the ALPN extension
                     mResponseCodec.prepareHandshake();
                 } else {
                     // Detect remote server's ALPN and then continue request.

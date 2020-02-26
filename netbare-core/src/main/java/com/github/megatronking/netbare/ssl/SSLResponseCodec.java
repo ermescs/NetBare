@@ -74,7 +74,7 @@ public class SSLResponseCodec extends SSLCodec {
     }
 
     /**
-     * Prepare and start SSL handshake with the remote server.
+     * Prepare and start SSL handshake with the remote server, without the ALPN extension
      *
      * @throws IOException If an I/O error has occurred.
      */
