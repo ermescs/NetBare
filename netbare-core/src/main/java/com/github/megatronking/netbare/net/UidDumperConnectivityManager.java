@@ -15,13 +15,15 @@
  */
 package com.github.megatronking.netbare.net;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.os.Build;
+import android.os.Process;
 import android.system.OsConstants;
 import android.text.TextUtils;
 import android.util.ArrayMap;
-import android.os.Process;
+
+import androidx.annotation.RequiresApi;
 
 import com.github.megatronking.netbare.NetBareConfig;
 import com.github.megatronking.netbare.NetBareLog;
@@ -42,20 +44,38 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * A dumper analyzes /proc/net/ files to dump uid of the network session. This class may be a
- * battery-killer, but can set {@link NetBareConfig.Builder#dumpUid} to false to close the dumper.
- *
- * @author Megatron King
- * @since 2018-12-03 16:54
- */
-public interface UidDumper {
+@RequiresApi(api = Build.VERSION_CODES.Q)
+public final class UidDumperConnectivityManager implements UidDumper {
+    private final UidProvider mUidProvider;
+    private String mLocalIp;
+    private ConnectivityManager connectivityManager;
+    private PackageManager packageManager;
 
-    /**
-     *  Update the given session with the UID. Currently does not work with Android 10
-     *
-     * @param session
-     */
-    public void request(final Session session);
+    public UidDumperConnectivityManager(ConnectivityManager connectivityManager, PackageManager packageManager, String localIp, UidProvider provider) {
+        this.mLocalIp = localIp;
+        this.mUidProvider = provider;
+        this.connectivityManager = connectivityManager;
+        this.packageManager = packageManager;
+    }
+
+    public void request(final Session session) {
+        if (mUidProvider != null) {
+            int uid = mUidProvider.uid(session);
+            if (uid != UidProvider.UID_UNKNOWN) {
+                session.uid = uid;
+                return;
+            }
+        }
+
+        InetSocketAddress source = new InetSocketAddress(this.mLocalIp, NetBareUtils.convertPort(session.localPort));
+        InetSocketAddress destination = new InetSocketAddress(NetBareUtils.convertIp(session.remoteIp), NetBareUtils.convertPort(session.remotePort));
+        int connectionOwnerUid = connectivityManager.getConnectionOwnerUid(OsConstants.IPPROTO_TCP, source, destination);
+
+        if (connectionOwnerUid == Process.INVALID_UID) {
+            session.uid = UidProvider.UID_UNKNOWN;
+        } else {
+            session.uid = connectionOwnerUid;
+        }
+    }
 
 }
