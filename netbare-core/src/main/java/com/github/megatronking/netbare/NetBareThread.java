@@ -15,7 +15,9 @@
  */
 package com.github.megatronking.netbare;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
@@ -168,7 +170,11 @@ import java.util.Map;
         private PacketsTransfer(VpnService service, NetBareConfig config) throws IOException {
             int mtu = config.mtu;
             String localIp = config.address.address;
-            UidDumper uidDumper = config.dumpUid ? new UidDumper(localIp, config.uidProvider) : null;
+
+            ConnectivityManager connectivityManager = (ConnectivityManager) service.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            PackageManager packageManager = service.getApplicationContext().getPackageManager();
+
+            UidDumper uidDumper = config.dumpUid ? new UidDumper(connectivityManager, packageManager, localIp, config.uidProvider) : null;
             // Register all supported protocols here.
             this.mForwarderRegistry = new LinkedHashMap<>(3);
             // TCP

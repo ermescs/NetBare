@@ -15,10 +15,16 @@
  */
 package com.github.megatronking.netbare.net;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.system.OsConstants;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.os.Process;
 
 import com.github.megatronking.netbare.NetBareConfig;
+import com.github.megatronking.netbare.NetBareLog;
 import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.ip.Protocol;
 import com.google.common.cache.Cache;
@@ -29,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -61,9 +68,16 @@ public final class UidDumper {
 
     private final UidProvider mUidProvider;
     private final ArrayMap<Protocol, NetDumper[]> mDumpers;
+    private String mLocalIp;
+    private ConnectivityManager connectivityManager;
+    private PackageManager packageManager;
 
-    public UidDumper(String localIp, UidProvider provider) {
+    public UidDumper(ConnectivityManager connectivityManager, PackageManager packageManager, String localIp, UidProvider provider) {
+        this.mLocalIp = localIp;
         this.mUidProvider = provider;
+        this.connectivityManager = connectivityManager;
+        this.packageManager = packageManager;
+
         this.mNetCaches = CacheBuilder.newBuilder()
                 .expireAfterAccess(NET_ALIVE_SECONDS, TimeUnit.SECONDS)
                 .concurrencyLevel(NET_CONCURRENCY_LEVEL)
@@ -93,8 +107,24 @@ public final class UidDumper {
         }
         // Android Q abandons the access permission.
         if (NetBareUtils.isAndroidQ()) {
+            InetSocketAddress source = new InetSocketAddress(this.mLocalIp, NetBareUtils.convertPort(session.localPort));
+            InetSocketAddress destination = new InetSocketAddress(NetBareUtils.convertIp(session.remoteIp), NetBareUtils.convertPort(session.remotePort));
+            int connectionOwnerUid = connectivityManager.getConnectionOwnerUid(OsConstants.IPPROTO_TCP, source, destination);
+            session.uid = connectionOwnerUid;
+
+            if (connectionOwnerUid == Process.INVALID_UID) {
+                NetBareLog.v("TAG Invalid UID");
+            } else {
+                String[] packagesForUid = packageManager.getPackagesForUid(connectionOwnerUid);
+                if (packagesForUid != null) {
+                    String join = TextUtils.join(", ", packagesForUid);
+                    NetBareLog.v("TAG Valid UID " + connectionOwnerUid + ": " + join);
+                }
+            }
+
             return;
         }
+
         final int port = NetBareUtils.convertPort(session.localPort);
         try {
             Net net = mNetCaches.get(session.remoteIp, new Callable<Net>() {
@@ -114,6 +144,7 @@ public final class UidDumper {
                     throw new Exception();
                 }
             });
+
             if (net != null) {
                 session.uid = net.uid;
             }
