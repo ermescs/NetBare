@@ -173,13 +173,12 @@ import java.util.Map;
             int mtu = config.mtu;
             String localIp = config.address.address;
 
-            ConnectivityManager connectivityManager = (ConnectivityManager) service.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            PackageManager packageManager = service.getApplicationContext().getPackageManager();
-
             UidDumper uidDumper = null;
 
             if (config.dumpUid) {
                 if (NetBareUtils.isAtLeastAndroidQ()) {
+                    ConnectivityManager connectivityManager = (ConnectivityManager) service.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    PackageManager packageManager = service.getApplicationContext().getPackageManager();
                     uidDumper = new UidDumperConnectivityManager(connectivityManager, packageManager, localIp, config.uidProvider);
                 } else {
                     uidDumper = new UidDumperProcNet(localIp, config.uidProvider);

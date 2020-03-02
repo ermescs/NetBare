@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Process;
+import android.system.Os;
 import android.system.OsConstants;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -67,9 +68,22 @@ public final class UidDumperConnectivityManager implements UidDumper {
             }
         }
 
+        int protocol;
+
+        switch (session.protocol) {
+            case TCP:
+                protocol = OsConstants.IPPROTO_TCP;
+                break;
+            case UDP:
+                protocol = OsConstants.IPPROTO_UDP;
+                break;
+            default:
+                return;
+        }
+
         InetSocketAddress source = new InetSocketAddress(this.mLocalIp, NetBareUtils.convertPort(session.localPort));
         InetSocketAddress destination = new InetSocketAddress(NetBareUtils.convertIp(session.remoteIp), NetBareUtils.convertPort(session.remotePort));
-        int connectionOwnerUid = connectivityManager.getConnectionOwnerUid(OsConstants.IPPROTO_TCP, source, destination);
+        int connectionOwnerUid = connectivityManager.getConnectionOwnerUid(protocol, source, destination);
 
         if (connectionOwnerUid == Process.INVALID_UID) {
             session.uid = UidProvider.UID_UNKNOWN;
