@@ -41,7 +41,22 @@ subprojects {
     if (project.ext.artifactId == null) return
 
     apply plugin: 'maven-publish'
+    apply plugin: 'maven'
+
     project.afterEvaluate {
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    repository(url: "${nexusUrl}/nexus/repository/maven-releases/") {
+                        authentication(userName: nexusUsername, password: nexusPassword)
+                    }
+                    snapshotRepository(url: "${nexusUrl}/nexus/repository/maven-snapshots/") {
+                        authentication(userName: nexusUsername, password: nexusPassword)
+                    }
+                }
+            }
+        }
+
         publishing {
             publications {
                 library(MavenPublication) {
