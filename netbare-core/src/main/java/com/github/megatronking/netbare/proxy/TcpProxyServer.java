@@ -115,20 +115,27 @@ import javax.net.ssl.SSLHandshakeException;
 
     @Override
     protected void process() throws IOException {
+        // Select a channel ready for communication
         int select = mSelector.select();
         if (select == 0) {
             return;
         }
+
+        // Access all channels ready for communication
         Set<SelectionKey> selectedKeys = mSelector.selectedKeys();
         if (selectedKeys == null) {
             return;
         }
+
+        // Iterate through the keys
         Iterator<SelectionKey> iterator = selectedKeys.iterator();
         while (iterator.hasNext()) {
             SelectionKey key = iterator.next();
             try {
                 if (key.isValid()) {
                     if (key.isAcceptable()) {
+                        // The connection was accepted by a ServerSocketChannel
+                        // Create a TcpVATunnel
                         onAccept();
                     } else {
                         Object attachment = key.attachment();
@@ -136,10 +143,13 @@ import javax.net.ssl.SSLHandshakeException;
                             NioCallback callback = (NioCallback) attachment;
                             try {
                                 if (key.isConnectable()) {
+                                    // The connection was established
                                     callback.onConnected();
                                 } else if (key.isReadable()) {
+                                    // The channel is ready for reading
                                     callback.onRead();
                                 } else if (key.isWritable()) {
+                                    // The channel is ready for writing
                                     callback.onWrite();
                                 }
                             } catch (IOException e) {
@@ -165,6 +175,7 @@ import javax.net.ssl.SSLHandshakeException;
     }
 
     private void onAccept() throws IOException {
+        // Incoming request to this proxy
         SocketChannel clientChannel = mServerSocketChannel.accept();
         Socket clientSocket = clientChannel.socket();
 

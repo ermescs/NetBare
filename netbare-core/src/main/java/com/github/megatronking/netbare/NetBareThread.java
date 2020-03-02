@@ -15,7 +15,9 @@
  */
 package com.github.megatronking.netbare;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
@@ -24,6 +26,8 @@ import com.github.megatronking.netbare.ip.IpAddress;
 import com.github.megatronking.netbare.ip.IpHeader;
 import com.github.megatronking.netbare.ip.Protocol;
 import com.github.megatronking.netbare.net.UidDumper;
+import com.github.megatronking.netbare.net.UidDumperConnectivityManager;
+import com.github.megatronking.netbare.net.UidDumperProcNet;
 import com.github.megatronking.netbare.proxy.IcmpProxyServerForwarder;
 import com.github.megatronking.netbare.proxy.ProxyServerForwarder;
 import com.github.megatronking.netbare.proxy.TcpProxyServerForwarder;
@@ -168,7 +172,19 @@ import java.util.Map;
         private PacketsTransfer(VpnService service, NetBareConfig config) throws IOException {
             int mtu = config.mtu;
             String localIp = config.address.address;
-            UidDumper uidDumper = config.dumpUid ? new UidDumper(localIp, config.uidProvider) : null;
+
+            UidDumper uidDumper = null;
+
+            if (config.dumpUid) {
+                if (NetBareUtils.isAtLeastAndroidQ()) {
+                    ConnectivityManager connectivityManager = (ConnectivityManager) service.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                    PackageManager packageManager = service.getApplicationContext().getPackageManager();
+                    uidDumper = new UidDumperConnectivityManager(connectivityManager, packageManager, localIp, config.uidProvider);
+                } else {
+                    uidDumper = new UidDumperProcNet(localIp, config.uidProvider);
+                }
+            }
+
             // Register all supported protocols here.
             this.mForwarderRegistry = new LinkedHashMap<>(3);
             // TCP
