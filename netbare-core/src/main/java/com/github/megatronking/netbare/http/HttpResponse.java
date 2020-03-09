@@ -39,6 +39,10 @@ public class HttpResponse extends Response {
     private HttpId mHttpId;
     private HttpSession mSession;
 
+    public Tunnel tunnel() {
+        return mResponse.tunnel();
+    }
+
     /* package */ HttpResponse(Response response, HttpSession session) {
         this(response, null, session);
     }

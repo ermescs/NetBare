@@ -42,7 +42,7 @@ import java.util.List;
  * @author Megatron King
  * @since 2018-11-20 23:43
  */
-/* package */ class HttpVirtualGateway extends TcpVirtualGateway {
+public class HttpVirtualGateway extends TcpVirtualGateway {
 
     private HttpZygoteRequest mHttpZygoteRequest;
     private HttpZygoteResponse mHttpZygoteResponse;

@@ -38,6 +38,10 @@ public class Response extends SessionTunnelFlow {
         this.mTunnel = tunnel;
     }
 
+    public Tunnel tunnel() {
+        return mTunnel;
+    }
+
     @Override
     public void process(ByteBuffer buffer) throws IOException {
         if (mTunnel != null) {
