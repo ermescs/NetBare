@@ -29,7 +29,7 @@ ext.publishedArtifactId = { project ->
 allprojects {
     group = "com.github.megatronking.netbare"
     project.ext.artifactId = rootProject.ext.publishedArtifactId(project)
-    version = "1.1.0"
+    version = "0.1.0-SNAPSHOT"
 
     repositories {
         google()
@@ -41,23 +41,24 @@ subprojects {
     if (project.ext.artifactId == null) return
 
     apply plugin: 'maven-publish'
-    apply plugin: 'maven'
 
     project.afterEvaluate {
-        uploadArchives {
+        publishing {
             repositories {
-                mavenDeployer {
-                    repository(url: "${nexusUrl}/nexus/repository/maven-releases/") {
-                        authentication(userName: nexusUsername, password: nexusPassword)
+                maven {
+                    def releasesRepoUrl = "${nexusUrl}/nexus/repository/maven-releases/"
+                    def snapshotsRepoUrl = "${nexusUrl}/nexus/repository/maven-snapshots/"
+
+                    credentials {
+                        username nexusUsername
+                        password nexusPassword
                     }
-                    snapshotRepository(url: "${nexusUrl}/nexus/repository/maven-snapshots/") {
-                        authentication(userName: nexusUsername, password: nexusPassword)
-                    }
+
+                    // Choose the repository according to the version of the artifact being published
+                    url version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
                 }
             }
-        }
 
-        publishing {
             publications {
                 libraryRelease(MavenPublication) {
                     groupId = project.group
