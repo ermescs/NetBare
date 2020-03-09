@@ -2,6 +2,7 @@ package com.github.megatronking.netbare.sample
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import com.github.megatronking.netbare.NetBare
 import com.github.megatronking.netbare.NetBareUtils
 import com.github.megatronking.netbare.ssl.JKS

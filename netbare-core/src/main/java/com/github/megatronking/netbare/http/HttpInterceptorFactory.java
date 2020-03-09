@@ -17,7 +17,11 @@ package com.github.megatronking.netbare.http;
 
 import androidx.annotation.NonNull;
 
+import com.github.megatronking.netbare.gateway.Interceptor;
 import com.github.megatronking.netbare.gateway.InterceptorFactory;
+import com.github.megatronking.netbare.gateway.Request;
+import com.github.megatronking.netbare.gateway.Response;
+import com.github.megatronking.netbare.gateway.VirtualGateway;
 
 /**
  * Factory used by developer to create their own interceptor for {@link HttpVirtualGateway}.
@@ -34,6 +38,5 @@ public interface HttpInterceptorFactory extends InterceptorFactory {
      */
     @NonNull
     @Override
-    HttpInterceptor create();
-
+    HttpInterceptor create(VirtualGateway gateway);
 }

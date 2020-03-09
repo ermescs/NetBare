@@ -43,7 +43,7 @@ public class HttpResponseChain extends AbstractResponseChain<HttpResponse, HttpI
         this.mZygoteResponse = response;
     }
 
-    HttpZygoteResponse zygoteResponse() {
+    /* package */ HttpZygoteResponse zygoteResponse() {
         return mZygoteResponse;
     }
 

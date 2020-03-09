@@ -65,10 +65,10 @@ import java.util.List;
         }
 
         // Add default interceptors.
-        HttpSSLCodecInterceptor codecInterceptor = new HttpSSLCodecInterceptor(sslEngineFactory, request, response);
-        this.mInterceptors = new ArrayList<>(8);
+        this.mInterceptors = new ArrayList<>(9);
 
         mInterceptors.add(new HttpSniffInterceptor(sessionFactory.create(session.id)));
+        HttpSSLCodecInterceptor codecInterceptor = new HttpSSLCodecInterceptor(sslEngineFactory, request, response);
         mInterceptors.add(codecInterceptor);
         mInterceptors.add(new Http2SniffInterceptor(codecInterceptor));
         mInterceptors.add(new Http2DecodeInterceptor(codecInterceptor, mHttpZygoteRequest, mHttpZygoteResponse));
@@ -83,7 +83,7 @@ import java.util.List;
                 subs.add(new HttpHeaderParseInterceptor());
                 // Add extension interceptors.
                 for (HttpInterceptorFactory factory : factories) {
-                    subs.add(factory.create());
+                    subs.add(factory.create(HttpVirtualGateway.this));
                 }
                 return subs;
             }
@@ -124,6 +124,10 @@ import java.util.List;
     @Override
     public void onSpecResponse(ByteBuffer buffer) throws IOException {
         new HttpResponseChain(mHttpZygoteResponse, mInterceptors).process(buffer);
+    }
+
+    public HttpResponseChain generateResponse(boolean isHttp2) {
+        return new HttpResponseChain(mHttpZygoteResponse, mInterceptors, isHttp2 ? 7 : 8, null);
     }
 
     @Override

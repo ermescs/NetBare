@@ -30,9 +30,9 @@ import java.util.List;
  */
 public final class DefaultVirtualGatewayFactory implements VirtualGatewayFactory {
 
-    private List<InterceptorFactory<Request, RequestChain, Response, ResponseChain>> mFactories;
+    private List<InterceptorFactory<DefaultVirtualGateway, Request, RequestChain, Response, ResponseChain>> mFactories;
 
-    private DefaultVirtualGatewayFactory(@NonNull List<InterceptorFactory<Request, RequestChain,
+    private DefaultVirtualGatewayFactory(@NonNull List<InterceptorFactory<DefaultVirtualGateway, Request, RequestChain,
             Response, ResponseChain>> factories) {
         this.mFactories = factories;
     }
@@ -49,7 +49,7 @@ public final class DefaultVirtualGatewayFactory implements VirtualGatewayFactory
      * @param factories a collection of {@link InterceptorFactory}.
      * @return A instance of {@link DefaultVirtualGatewayFactory}.
      */
-    public static VirtualGatewayFactory create(@NonNull List<InterceptorFactory<Request, RequestChain,
+    public static VirtualGatewayFactory create(@NonNull List<InterceptorFactory<DefaultVirtualGateway, Request, RequestChain,
             Response, ResponseChain>> factories) {
         return new DefaultVirtualGatewayFactory(factories);
     }
@@ -60,7 +60,7 @@ public final class DefaultVirtualGatewayFactory implements VirtualGatewayFactory
      * @return A instance of {@link VirtualGatewayFactory}.
      */
     public static VirtualGatewayFactory create() {
-        return create(new ArrayList<InterceptorFactory<Request, RequestChain, Response, ResponseChain>>());
+        return create(new ArrayList<InterceptorFactory<DefaultVirtualGateway, Request, RequestChain, Response, ResponseChain>>());
     }
 
 }

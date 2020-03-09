@@ -18,6 +18,7 @@ package com.github.megatronking.netbare.http;
 import com.github.megatronking.netbare.gateway.Response;
 import com.github.megatronking.netbare.http2.Http2Settings;
 import com.github.megatronking.netbare.ip.Protocol;
+import com.github.megatronking.netbare.tunnel.Tunnel;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

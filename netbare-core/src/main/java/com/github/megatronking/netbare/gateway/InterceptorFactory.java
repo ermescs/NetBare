@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
  * @author Megatron King
  * @since 2018-11-02 23:46
  */
-public interface InterceptorFactory<Req extends Request, ReqChain extends AbstractRequestChain<Req, ? extends Interceptor>,
+public interface InterceptorFactory<Gateway extends VirtualGateway, Req extends Request, ReqChain extends AbstractRequestChain<Req, ? extends Interceptor>,
         Res extends Response, ResChain extends AbstractResponseChain<Res, ? extends Interceptor>> {
 
     /**
@@ -32,6 +32,6 @@ public interface InterceptorFactory<Req extends Request, ReqChain extends Abstra
      * @return A newly created interceptor.
      */
     @NonNull
-    Interceptor<Req, ReqChain, Res, ResChain> create();
+    Interceptor<Req, ReqChain, Res, ResChain> create(Gateway gateway);
 
 }

@@ -19,6 +19,9 @@ import android.net.Uri;
 import android.os.Process;
 import androidx.annotation.NonNull;
 
+import com.github.megatronking.netbare.gateway.Request;
+import com.github.megatronking.netbare.gateway.Response;
+import com.github.megatronking.netbare.gateway.VirtualGateway;
 import com.github.megatronking.netbare.injector.HttpInjector;
 
 import java.io.IOException;
@@ -43,19 +46,19 @@ public final class HttpInjectInterceptor extends HttpIndexedInterceptor {
 
     @Override
     protected final void intercept(@NonNull final HttpRequestChain chain,
-                                   @NonNull ByteBuffer buffer, int index) throws IOException {
+                                   @NonNull ByteBuffer buffer, int packetIndex) throws IOException {
         if (chain.request().uid() == Process.myUid()) {
             chain.process(buffer);
             return;
         }
-        if (index == 0) {
+        if (packetIndex == 0) {
             mShouldInjectRequest = mHttpInjector.sniffRequest(chain.request());
         }
         if (!mShouldInjectRequest) {
             chain.process(buffer);
             return;
         }
-        if (index == 0) {
+        if (packetIndex == 0) {
             mHttpInjector.onRequestInject(buildHeader(chain.request()), new HttpRequestInjectorCallback(chain));
         } else {
             mHttpInjector.onRequestInject(chain.request(), new HttpRawBody(buffer), new HttpRequestInjectorCallback(chain));
@@ -64,19 +67,19 @@ public final class HttpInjectInterceptor extends HttpIndexedInterceptor {
 
     @Override
     protected final void intercept(@NonNull final HttpResponseChain chain,
-                                   @NonNull ByteBuffer buffer, int index) throws IOException {
+                                   @NonNull ByteBuffer buffer, int packetIndex) throws IOException {
         if (chain.response().uid() == Process.myUid()) {
             chain.process(buffer);
             return;
         }
-        if (index == 0) {
+        if (packetIndex == 0) {
             mShouldInjectResponse = mHttpInjector.sniffResponse(chain.response());
         }
         if (!mShouldInjectResponse) {
             chain.process(buffer);
             return;
         }
-        if (index == 0) {
+        if (packetIndex == 0) {
             mHttpInjector.onResponseInject(buildHeader(chain.response()),
                     new HttpResponseInjectorCallback(chain));
         } else {
@@ -126,7 +129,7 @@ public final class HttpInjectInterceptor extends HttpIndexedInterceptor {
 
             @NonNull
             @Override
-            public HttpInterceptor create() {
+            public HttpInterceptor create(VirtualGateway gateway) {
                 return new HttpInjectInterceptor(httpInjector);
             }
 

@@ -35,11 +35,11 @@ import java.util.List;
     private final List<Interceptor<Request, RequestChain, Response, ResponseChain>> mInterceptors;
 
     /* package */ DefaultVirtualGateway(Session session, Request request, Response response,
-                                        List<InterceptorFactory<Request, RequestChain, Response, ResponseChain>> factories) {
+                                        List<InterceptorFactory<DefaultVirtualGateway, Request, RequestChain, Response, ResponseChain>> factories) {
         super(session, request, response);
         this.mInterceptors = new ArrayList<>(factories.size());
-        for (InterceptorFactory<Request, RequestChain, Response, ResponseChain> factory : factories) {
-            mInterceptors.add(factory.create());
+        for (InterceptorFactory<DefaultVirtualGateway, Request, RequestChain, Response, ResponseChain> factory : factories) {
+            mInterceptors.add(factory.create(this));
         }
     }
 

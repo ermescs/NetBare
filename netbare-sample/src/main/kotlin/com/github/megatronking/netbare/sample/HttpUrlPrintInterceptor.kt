@@ -1,6 +1,9 @@
 package com.github.megatronking.netbare.sample
 
 import android.util.Log
+import com.github.megatronking.netbare.gateway.Request
+import com.github.megatronking.netbare.gateway.Response
+import com.github.megatronking.netbare.gateway.VirtualGateway
 import com.github.megatronking.netbare.http.HttpIndexedInterceptor
 import com.github.megatronking.netbare.http.HttpInterceptorFactory
 import com.github.megatronking.netbare.http.HttpRequestChain
@@ -19,7 +22,7 @@ class HttpUrlPrintInterceptor : HttpIndexedInterceptor() {
         const val TAG = "URL"
 
         fun createFactory(): HttpInterceptorFactory {
-            return HttpInterceptorFactory { HttpUrlPrintInterceptor() }
+            return HttpInterceptorFactory { _ -> HttpUrlPrintInterceptor() }
         }
     }
 
