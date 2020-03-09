@@ -35,7 +35,7 @@ public final class HttpResponseHeaderPart extends HttpHeaderPart {
     private final int code;
     private final String message;
 
-    HttpResponseHeaderPart(int code, String message, HttpProtocol protocol, Uri uri,
+    public HttpResponseHeaderPart(int code, String message, HttpProtocol protocol, Uri uri,
                            Map<String, List<String>> headers) {
         super(protocol, uri, headers);
         this.code = code;
