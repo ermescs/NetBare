@@ -22,7 +22,6 @@ import com.github.megatronking.netbare.NetBareUtils;
 import com.github.megatronking.netbare.gateway.VirtualGateway;
 import com.github.megatronking.netbare.net.Session;
 import com.github.megatronking.netbare.net.SessionProvider;
-import com.github.megatronking.netbare.ssl.SSLWhiteList;
 import com.github.megatronking.netbare.tunnel.ConnectionShutdownException;
 import com.github.megatronking.netbare.tunnel.NioCallback;
 import com.github.megatronking.netbare.tunnel.NioTunnel;
@@ -181,7 +180,7 @@ import javax.net.ssl.SSLHandshakeException;
 
         // The client ip is the remote server ip
         // The client port is the local port(it is the vpn port not the proxy server port)
-        String ip = clientSocket.getInetAddress().getHostAddress();
+        String remoteIpAddress = clientSocket.getInetAddress().getHostAddress();
         int port = clientSocket.getPort();
 
         // The session should have be saved before the tcp packets be forwarded to proxy server. So
@@ -198,12 +197,12 @@ import javax.net.ssl.SSLHandshakeException;
         TcpTunnel remoteTunnel = null;
         try {
             proxyTunnel = new TcpProxyTunnel(clientChannel, mSelector, remotePort);
-            remoteTunnel = new TcpRemoteTunnel(mVpnService, SocketChannel.open(),
-                    mSelector, ip, remotePort);
+            remoteTunnel = new TcpRemoteTunnel(mVpnService, SocketChannel.open(), mSelector, remoteIpAddress, remotePort);
+
             TcpVATunnel gatewayTunnel = new TcpVATunnel(session, proxyTunnel,
                     remoteTunnel, mMtu);
-            gatewayTunnel.connect(new InetSocketAddress(ip, remotePort));
-        } catch (IOException e){
+            gatewayTunnel.connect(new InetSocketAddress(remoteIpAddress, remotePort));
+        } catch (IOException e) {
             NetBareUtils.closeQuietly(proxyTunnel);
             NetBareUtils.closeQuietly(remoteTunnel);
             throw e;
