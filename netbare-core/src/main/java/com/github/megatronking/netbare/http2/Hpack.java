@@ -504,7 +504,12 @@ import java.util.Map;
                                 Map<String, List<String>> headers) throws IOException {
             mOut = new ByteArrayOutputStream();
             List<Header> hpackHeaders = new ArrayList<>();
-            hpackHeaders.add(new Header(Header.TARGET_METHOD, method.name()));
+
+            if (method != null) {
+                // This is because of a null pointer exception thrown when
+                // [HttpHeaderParserInterceptor] cannot determinate the HTTP method
+                hpackHeaders.add(new Header(Header.TARGET_METHOD, method.name()));
+            }
             hpackHeaders.add(new Header(Header.TARGET_PATH, path));
             hpackHeaders.add(new Header(Header.TARGET_AUTHORITY, host));
             hpackHeaders.add(new Header(Header.TARGET_SCHEME, "https"));
