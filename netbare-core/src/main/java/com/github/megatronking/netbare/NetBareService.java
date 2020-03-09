@@ -73,8 +73,12 @@ public abstract class NetBareService extends VpnService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
-            return START_NOT_STICKY;
+            NetBareLog.d("NetBareService intent is null");
+            startNetBare();
+            startForeground(notificationId(), createNotification());
+            return START_STICKY;
         }
+
         String action = intent.getAction();
         if (ACTION_START.equals(action)) {
             startNetBare();
@@ -86,7 +90,7 @@ public abstract class NetBareService extends VpnService {
         } else {
             stopSelf();
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
