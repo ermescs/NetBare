@@ -77,8 +77,11 @@ class MainActivity : AppCompatActivity(), NetBareListener {
             return
         }
         // 启动NetBare服务
-        mNetBare.start(NetBareConfig.defaultHttpConfig(App.getInstance().getJSK(),
-                interceptorFactories()))
+        mNetBare.start(NetBareConfig.defaultHttpConfig(App.getInstance().getJSK(), interceptorFactories())
+                .newBuilder()
+                .addDnsServer("8.8.8.8")
+                .addDnsServer("4.4.4.4")
+                .addDnsServer("1.1.1.1").build())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
