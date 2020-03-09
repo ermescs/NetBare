@@ -59,7 +59,7 @@ subprojects {
 
         publishing {
             publications {
-                library(MavenPublication) {
+                libraryRelease(MavenPublication) {
                     groupId = project.group
                     artifactId = project.ext.artifactId
                     version = project.version
@@ -68,7 +68,27 @@ subprojects {
                         artifact bundleReleaseAar
                     }
                 }
+
+                libraryDebug(MavenPublication) {
+                    groupId = project.group
+                    artifactId = project.ext.artifactId
+                    version = project.version
+
+                    project.afterEvaluate {
+                        artifact bundleDebugAar
+                        artifact sourceJar
+                    }
+                }
             }
+        }
+    }
+}
+
+subprojects {
+    project.afterEvaluate {
+        task sourceJar(type: Jar) {
+            from project.android.sourceSets.main.java.srcDirs
+            classifier "sources"
         }
     }
 }
